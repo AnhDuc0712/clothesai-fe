@@ -1,35 +1,34 @@
-import React, { createContext, useContext } from 'react'
-import useLocalStorage from '../hooks/useLocalStorage'
+import React, { createContext, useContext, useState, useEffect } from "react";
 
+const AuthContext = createContext();
 
-const AuthContext = createContext()
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
+  // ✅ Khi load lại trang, đọc trạng thái login từ localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("user_logged_in");
+    if (stored) setUser({ name: "User" });
+  }, []);
 
-export function AuthProvider({ children }) {
-const [user, setUser] = useLocalStorage('user', null)
+  // ✅ Hàm login (fake tạm)
+  const login = () => {
+    localStorage.setItem("user_logged_in", true);
+    setUser({ name: "User" });
+  };
 
+  // ✅ Hàm logout
+  const logout = () => {
+    localStorage.removeItem("user_logged_in");
+    setUser(null);
+  };
 
-const login = (email, password) => {
-// fake logic: always login success
-const name = email.split('@')[0]
-setUser({ name, email })
-}
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-
-const register = (name, email, password) => {
-setUser({ name, email })
-}
-
-
-const logout = () => setUser(null)
-
-
-return (
-<AuthContext.Provider value={{ user, login, register, logout }}>
-{children}
-</AuthContext.Provider>
-)
-}
-
-
-export const useAuth = () => useContext(AuthContext)
+// ✅ Hook tiện dụng
+export const useAuth = () => useContext(AuthContext);

@@ -6,3 +6,7 @@ export const products = [
 { id: 5, title: 'Giày thể thao', brand: 'Sporty', price: '799,000', image: 'https://via.placeholder.com/300x300?text=Giay' },
 { id: 6, title: 'Mũ lưỡi trai', brand: 'CapCo', price: '99,000', image: 'https://via.placeholder.com/300x300?text=Mu' }
 ]
+// Nếu localStorage chưa có sản phẩm, tự động khởi tạo từ mockData
+if (!localStorage.getItem("products")) {
+  localStorage.setItem("products", JSON.stringify(products));
+}
